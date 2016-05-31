@@ -1,10 +1,21 @@
 #Cassandra
 
 ##Notes
+* define replication during the creation of keyspace (which is similar to `create database` in SQL)
+```
+CREATE KEYSPACE somekeyspace
+WITH REPLICATION = {
+'class':'NetworkTopologyStrategy', 'dc-west':2, 'dc-east':3
+}
+```
 * configuration in cassandra.yaml file
+    * every node has this file
+    * you can disable hinted handoff
+    * a node will store a hint by default for 3 hours, may be changed
 * replication will typically not occur on the same physical rack
 * Datacenters: split spark cluster from cassandra cluster
     * so that spark applications do not trip cassandra
+* consistency level can be set at the session, per query, etc
 
 ## Architecture
 * ideally 3 - 5 TB (only) SSD per node
@@ -18,6 +29,7 @@
 ## Peer-to-peer
 * partitioned tolerance
     * if coordinator think 2/3 nodes are down, it will still allow a read/write from the single node that is up
+    * **BUT you decide if the transaction was valid**
 * single leader
     * load balance reads to followers, writes to leader
     * eventual consistency, won't be able to read your own writes (maybe 2ms before writes get propagated)
@@ -52,10 +64,30 @@
 dc=DC1
 rack=RAC1
 ```
-_cassandra-topology.properties_ interesting for admin
-```
-<ip-address>=<datacenter>:<rack>
-```
 
 ## Replication
+* the higher the replication, token range shifts clockwise around the circle
+* topology changes are either change in snitch or change keyspace or moving a rack to a different datacenter
+* quorum: more than half i.e. 3 replications, 2/3 is valid
 
+
+## Consistency
+* CAP theorem
+    * Availability > Partition Tolerance > Consistency
+    * Cassandra sits between Availability and Partition Tolerance
+
+When `R + W > n`, you get strong consistency
+
+    R: nodes being read
+    W: nodes being written to
+    n: replication factor
+
+* quorum: consistency
+* one and one: latency
+
+## Failed writes
+* hints are kept for 3 hours by default
+* throttling
+
+Consistency level of ANY: hinted handoff enabled, all three nodes are down
+if only a hint was done, still a "valid" write
