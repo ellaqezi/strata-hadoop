@@ -14,7 +14,7 @@ WITH REPLICATION = {
     * a node will store a hint by default for 3 hours, may be changed
 * replication will typically not occur on the same physical rack
 * Datacenters: split spark cluster from cassandra cluster
-    * so that spark applications do not trip cassandra
+    * so that spark applications do not trip cassandra IO
 * consistency level can be set per session, per query, etc
 
 ## Architecture
@@ -22,9 +22,9 @@ WITH REPLICATION = {
 * maximum 1000 nodes for cassandra
     * scale Cassandra horizontally
 * coordinator node picked by driver
-* you never have to take the cluster down (not for updating, adding nodes, taking out nodes, etc)
-    * seed nodes introduce the rest of the cluster to the joining nodes
-    * any node can be seed nodes (2 or 3 nodes that will always be there, valid ip addresses)
+* seed nodes introduce the rest of the cluster to the joining nodes
+* any node can be seed nodes (2 or 3 nodes that will always be there, valid ip addresses)
+> you never have to take the cluster down (not for updating, adding nodes, taking out nodes, etc)
 
 ## Peer-to-peer
 * partitioned tolerance
@@ -94,12 +94,13 @@ When `R + W > n`, you get strong consistency
 Consistency level of ANY:
 Given hinted hand-off is enabled and all three nodes are down, even if only a hint was handed off, still a "valid" write
 
-_read up on Merkle-tree_
+>read up on Merkle-tree
 
 ## Nodetool Repair
 * Nodetool is the main management tool for Cassandra
     * get status and control cluster
 * should be done atleast weekly, off-hours maintenance
+* repair more often than your grace period, default 10 days
 
 ## Write Path
 * Storage (based on moving disks, big sequential write is better than making many little writes)
@@ -116,6 +117,7 @@ _read up on Merkle-tree_
         * set of SSTables per table
         * in HDD
         * flush tables whenever there are writes
+* deletions are just writes, tombstone records to be
         
 ## Reading data
 _Reads from MemTable and SSTable_
@@ -130,3 +132,55 @@ _Reads from MemTable and SSTable_
 | Token | Byte Offset |
 |---    |---          |
 | 36    | 6,224       |
+
+## Compaction Strategies
+* time-series optimized
+* read-heavy
+* write-heavy
+
+
+# Q & A
+1. When to choose Cassandra?
+    * it has to be big data, when you're not comfortable managing using legacy tools.
+    * transactional
+    * always ON
+    > Scheduled maintenance windows are a thing of the past.
+
+2. Anti-patterns for Cassandra?
+    * used as a queue (use Kafka instead, or in combination with)
+    * large (immutable) blobs
+
+3. Solr and Cassandra?
+    * there used to be solyndra (now dead)
+        * solr core for table, define schema and store schema in cassandra table
+        * each node is indexed locally so solr index is always local
+    * cassandra read is 5 ms > search is at 50 - 500 ms (doable for full text search) > still better than elastic search
+
+4. How are joins done on Cassandra?
+    * no joins in cassandra, integrate spark and do the join with spark
+
+5. Why de-normalize?
+    * you do normalize in relational databases, but under the pressure of scale, normalization is given less and less priority
+    * you give up consistency due to replication
+    > you were going to do it anyway, so de-normalize from the beginning
+
+6. When to switch technologies on enterprise systems?
+    * rebuilding a working thing on promising tech, risky
+    * fixing a broken thing using new tech, good
+    * building new things with promising new tech, safest bet
+
+7. Hadoop integration?
+    * no open-source hadoop integration
+    * you do NOT run HDFS on the same node
+        * CFS: make cassandra tables to look like hdfs i.e. hdfs mocking
+    > funny to say that Hadoop is now a legacy technology, no more development in map reduce perhaps in maintenance
+    ...hdfs on the other hand is a cockroach and will most likely be around for the foreseeable future
+
+8. Security?
+    * LDAP and kerberos integration (commercial), perhaps eventually in open source
+
+9. Schema migration?
+    * tooling is less sophisticated
+        * there exists for RDBMS a tool to source control schema, could eventually exist for cassandra as well
+    * fixed key structure, so key migrations are hard to migrate
+    * for non-key migrations, then it's the same as what's done on relational databases
