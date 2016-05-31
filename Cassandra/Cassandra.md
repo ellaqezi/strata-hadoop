@@ -88,6 +88,14 @@ When `R + W > n`, you get strong consistency
 ## Failed writes
 * hints are kept for 3 hours by default
 * throttling
+* read repair is asynchronous, on whole partition
 
-Consistency level of ANY: hinted handoff enabled, all three nodes are down
-if only a hint was done, still a "valid" write
+Consistency level of ANY:
+Given hinted hand-off is enabled and all three nodes are down, even if only a hint was handed off, still a "valid" write
+
+_read up on Merkle-tree_
+
+## Nodetool Repair
+* Nodetool is the main management tool for Cassandra
+    * get status and control cluster
+* should be done atleast weekly, off-hours maintenance
