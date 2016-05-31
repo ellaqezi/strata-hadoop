@@ -1,6 +1,10 @@
 #Cassandra
 
 ##Notes
+* configuration in cassandra.yaml file
+* replication will typically not occur on the same physical rack
+* Datacenters: split spark cluster from cassandra cluster
+    * so that spark applications do not trip cassandra
 
 ## Architecture
 * ideally 3 - 5 TB (only) SSD per node
@@ -32,3 +36,26 @@
 * default 256 virtual nodes per node
 
 ## Gossip
+* talk to three nodes, arbitrarily, to exchange status (yours, theirs, others you've and they've talked to)
+    * status: cluster metadata e.g. endpoint state, heartbeat state, application state
+    * probabilistic
+* 1 min. to propagate status across cluster
+    * no theoretical upper bound but in practice, 1 min no matter how big the cluster
+* very low bandwidth trickle
+
+## Snitch
+* richer concept of location
+* tells a node the topology of the cluster
+* cloud vs non-cloud snitches
+* GossipingPropertyFileSnitch -> look in cassandra-rackdc.properties
+```
+dc=DC1
+rack=RAC1
+```
+_cassandra-topology.properties_ interesting for admin
+```
+<ip-address>=<datacenter>:<rack>
+```
+
+## Replication
+
