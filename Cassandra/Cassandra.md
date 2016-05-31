@@ -15,7 +15,7 @@ WITH REPLICATION = {
 * replication will typically not occur on the same physical rack
 * Datacenters: split spark cluster from cassandra cluster
     * so that spark applications do not trip cassandra
-* consistency level can be set at the session, per query, etc
+* consistency level can be set per session, per query, etc
 
 ## Architecture
 * ideally 3 - 5 TB (only) SSD per node
@@ -107,11 +107,26 @@ _read up on Merkle-tree_
         * sequential, no index structures
         * one commit log per node/server
         * logs of mutations, etc.
-        * flush all at once (all memtables included)
-    * memtable, for speed
-        * one memtable per table
+        * flush all at once (all MemTables included)
+    * MemTable, for speed
+        * one MemTable per table
+        * contains only recent updates
         * in RAM
     * SSTable (immutable)
         * set of SSTables per table
         * in HDD
-_Reads from memtable and SSTable_
+        * flush tables whenever there are writes
+        
+## Reading data
+_Reads from MemTable and SSTable_
+* read from MemTable > SSTable
+    * if entire row is in MemTable, all well and good
+    * if one column is recently updated, retrieval for that column may be done from MemTable **but**
+    other columns required may not be on MemTable so then SSTables have to be read
+* Read from SSTable
+    * partition summary
+    * caching done in key-cache for record such as the one below
+
+| Token | Byte Offset |
+|---    |---          |
+| 36    | 6,224       |
