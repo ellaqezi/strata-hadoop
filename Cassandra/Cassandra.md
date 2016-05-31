@@ -82,8 +82,9 @@ When `R + W > n`, you get strong consistency
     W: nodes being written to
     n: replication factor
 
-* quorum: consistency
-* one and one: latency
+* Consistency levels
+    * quorum: consistency
+    * one and one: latency
 
 ## Failed writes
 * hints are kept for 3 hours by default
@@ -99,3 +100,18 @@ _read up on Merkle-tree_
 * Nodetool is the main management tool for Cassandra
     * get status and control cluster
 * should be done atleast weekly, off-hours maintenance
+
+## Write Path
+* Storage (based on moving disks, big sequential write is better than making many little writes)
+    * CommitLog
+        * sequential, no index structures
+        * one commit log per node/server
+        * logs of mutations, etc.
+        * flush all at once (all memtables included)
+    * memtable, for speed
+        * one memtable per table
+        * in RAM
+    * SSTable (immutable)
+        * set of SSTables per table
+        * in HDD
+_Reads from memtable and SSTable_
