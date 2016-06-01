@@ -28,11 +28,11 @@
         * if you have regular columns, use general formula
         * if you have ONLY primary key and static use 2nd formula
 
-        ![N_v = N_r x (N_c - N_{pk} - N_s) + N_s](http://mathurl.com/hoy5wpr.png)
+            ![N_v = N_r x (N_c - N_{pk} - N_s) + N_s](http://mathurl.com/hoy5wpr.png)
 
-        ```math
-        N_v = N_r x (N_c - N_{pk} - N_s) + N_s
-        ```
+            ```math
+            N_v = N_r x (N_c - N_{pk} - N_s) + N_s
+            ```
 
 ## Data Modelling
 ### Chebotko Diagrams
@@ -42,12 +42,12 @@
 * optimization between logical and physical
 * how data is organized as well as flow
 * UDT: user-defined type, to group data together, queries are not run against UDTs
-
-
+```
     * K: partition key
     * C: clustering columns
     * S: static columns
     * {}: collections i.e. lists, sets, tuples
+```
 
 ### Data modelling principles
 * know your data and queries, nesting and duplicating data
@@ -106,6 +106,7 @@ UDT will look like a table, defines nesting feature
 
 ## Mapping rules
 * query-driven methodology
+
 > query is King!
 
 _Note: numbering of mapping rules is a must-know for the certification exam_
@@ -125,7 +126,9 @@ _Note: numbering of mapping rules is a must-know for the certification exam_
 
 ### MR3: Inequality search attributes
 * all inequality **FOLLOW** equality searches
+
 > you CANNOT mix them up
+
 * once you have an inequality you won't use following columns in the primary key sequence
 * inequality searches are ">" or "<"
 * **inequality search attributes become clustering columns**

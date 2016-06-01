@@ -39,6 +39,7 @@ WITH REPLICATION = {
 ## VNodes
 * Regular token range assignment
     * token assignment not evenly spread
+
 * vnodes is switched on by default
     * _spark users usually do NOT use vnodes_
     * _solr sharding doesn't play well with vnodes_
@@ -118,7 +119,7 @@ Given hinted hand-off is enabled and all three nodes are down, even if only a hi
         * in HDD
         * flush tables whenever there are writes
 * deletions are just writes, tombstone records to be
-        
+
 ## Reading data
 _Reads from MemTable and SSTable_
 * read from MemTable > SSTable
@@ -127,6 +128,7 @@ _Reads from MemTable and SSTable_
     other columns required may not be on MemTable so then SSTables have to be read
 * Read from SSTable
     * partition summary
+    * row-caching is NOT recommended
     * caching done in key-cache for records that were difficult to retrieve such as the one below
 
 | Token | Byte Offset |
@@ -184,3 +186,8 @@ _Reads from MemTable and SSTable_
         * there exists for RDBMS a tool to source control schema, could eventually exist for cassandra as well
     * fixed key structure, so key migrations are hard to migrate
     * for non-key migrations, then it's the same as what's done on relational databases
+
+10. What are tokens?
+    * An element on the ring that depends on the partitioner
+    * A token determines the node's position on the ring and the portion of data it is responsible for
+    * The range for the Murmur3Partitioner (default) is -263 to +263. The range for the RandomPartitioner is 0 to $2127^{-1}$.
