@@ -14,6 +14,8 @@
     * relationships: lines between entities
     * cardinality: m, n, 1-n, 1-1
     * attributes: ovals, two rings if multiple values for attribute can exist i.e. genres, tags
+* minimality: minimum number of columns for uniqueness
+    * still the focus is on partitioning data
 * Limitations
     * Cassandra 2.0 and earlier
         * Partition size: About 100 MB or less
@@ -25,21 +27,28 @@
     * Calculating number of values
         * if you have regular columns, use general formula
         * if you have ONLY primary key and static use 2nd formula
-        ![formula](http://mathurl.com/hoy5wpr.png)
-        $$N_v = N_r \times (N_c - N_{pk} - N_s) + N_s$$
+
+        ![N_v = N_r x (N_c - N_{pk} - N_s) + N_s](http://mathurl.com/hoy5wpr.png)
+
+        ```math
+        N_v = N_r x (N_c - N_{pk} - N_s) + N_s
+        ```
 
 ## Data Modelling
 ### Chebotko Diagrams
-    * ERD: entity relationship diagram
-    * logical and physical data model
-    * no data types, data types in physical data model
-    * optimization between logical and physical
-    * how data is organized as well as flow
-    * UDT: user-defined type, to group data together, queries are not run against UDTs
-    * S: static columns
-    * {}: collections i.e. lists, sets, tuples
+* ERD: entity relationship diagram
+* logical and physical data model
+* no data types, data types in physical data model
+* optimization between logical and physical
+* how data is organized as well as flow
+* UDT: user-defined type, to group data together, queries are not run against UDTs
+
+
     * K: partition key
     * C: clustering columns
+    * S: static columns
+    * {}: collections i.e. lists, sets, tuples
+
 ### Data modelling principles
 * know your data and queries, nesting and duplicating data
 * seems like cassandra has much data duplication
@@ -97,7 +106,9 @@ UDT will look like a table, defines nesting feature
 
 ## Mapping rules
 * query-driven methodology
-* _numbering of mapping rules is a must-know for the certification exam_
+> query is King!
+
+_Note: numbering of mapping rules is a must-know for the certification exam_
 
 ### MR1: Entities and Relationships
 * mapping tables
@@ -129,22 +140,23 @@ UDT will look like a table, defines nesting feature
 * key attribute has to be in the primary key, does not have to come first
     * it does not have to be the partition key of the table
     * it may be a clustering column
+    * related to minimality
 
 ### Applying Mapping rules
 ```
 user_id = ? and uploaded_timestamp > ?
 ORDER BY uploaded_timestamp DESC
 ```
-|videos_by_user|
-|---|
-|user_id    K|
-|uploaded_timestamp C↓|
-|video_id   C↑|
-|...|
+|videos_by_user| column type|
+|---|---:|
+|user_id  |  K|
+|uploaded_timestamp| C↓|
+|video_id  | C↑|
+|...| |
 
 ## Physical data model
 
-`Physical model = Logical model + data types`
+`Physical model = Logical model + data types + optimizations`
 
 ### Data duplication
 * byproduct of the modelling principles
@@ -154,3 +166,30 @@ ORDER BY uploaded_timestamp DESC
 * Not OK: non-constant duplication factor
     * re-think your use-case
     * apply limits
+
+## Lightweight transactions (LWTs)
+* done within partitions, ACID transaction at partition level
+* more expensive than regular reads and writes
+* alternatives: write new values instead of updates, ...
+* prevents upserts
+    * upsert: latest update wins
+    * INSERT and UPDATE is the same under the hood
+
+## Data aggregation: only **COUNT** is supported in cassandra
+* aggregation is done on client-side (e.g. spark) then write back into cassandra table
+* Cassandra 3.0+ now supports MIN, MAX, AVERAGE, etc.
+
+## Table optimization
+* split partitions in a table for when partitions grow too large
+    * key migration e.g. re-organise primary key i.e. change a clustering column into partition key
+    * add another column (existing or artificial)
+        * artificial (aka "bucket") column can control distribution e.g. create date column by grouping timestamp column
+* concurrent access to data allows for better performance but can introduce inconsistency
+    * use COUNTER data type
+    * use lightweight transactions
+        * guaranteed correctness, penalty in performance
+        * failed LWTs must be repeated
+* isolate computation by data isolation
+    * no concurrent access, correctness is not an issue
+    * fast writes, more space required
+    * external data aggregation (client-side) then rewritten back
