@@ -118,7 +118,7 @@ Given hinted hand-off is enabled and all three nodes are down, even if only a hi
         * set of SSTables per table
         * in HDD
         * flush tables whenever there are writes
-* deletions are just writes, tombstone records to be
+* deletions are just writes, tombstone (mark) records to be deleted
 
 ## Reading data
 _Reads from MemTable and SSTable_
@@ -131,9 +131,9 @@ _Reads from MemTable and SSTable_
     * row-caching is NOT recommended
     * caching done in key-cache for records that were difficult to retrieve such as the one below
 
-| Token | Byte Offset |
-|---    |---          |
-| 36    | 6,224       |
+        | Token | Byte Offset |
+        |---    |---          |
+        | 36    | 6,224       |
 
 ## Compaction Strategies
 * time-series optimized
@@ -146,6 +146,7 @@ _Reads from MemTable and SSTable_
     * it has to be big data, when you're not comfortable managing using legacy tools.
     * transactional
     * always ON
+
     > Scheduled maintenance windows are a thing of the past.
 
 2. Anti-patterns for Cassandra?
@@ -164,6 +165,7 @@ _Reads from MemTable and SSTable_
 5. Why de-normalize?
     * you do normalize in relational databases, but under the pressure of scale, normalization is given less and less priority
     * you give up consistency due to replication
+
     > you were going to do it anyway, so de-normalize from the beginning
 
 6. When to switch technologies on enterprise systems?
@@ -175,6 +177,7 @@ _Reads from MemTable and SSTable_
     * no open-source hadoop integration
     * you do NOT run HDFS on the same node
         * CFS: make cassandra tables to look like hdfs i.e. hdfs mocking
+
     > funny to say that Hadoop is now a legacy technology, no more development in map reduce perhaps in maintenance
     ...hdfs on the other hand is a cockroach and will most likely be around for the foreseeable future
 
