@@ -14,6 +14,19 @@
     * relationships: lines between entities
     * cardinality: m, n, 1-n, 1-1
     * attributes: ovals, two rings if multiple values for attribute can exist i.e. genres, tags
+* Limitations
+    * Cassandra 2.0 and earlier
+        * Partition size: About 100 MB or less
+        * number of values: 100,000
+    * Cassandra 2.1+
+        * Partition size: 100s of MB per partition
+        * number of values: hundreds of thousands
+    * **you CANNOT update partition keys**
+    * Calculating number of values
+        * if you have regular columns, use general formula
+        * if you have ONLY primary key and static use 2nd formula
+        ![formula](http://mathurl.com/hoy5wpr.png
+        $$N_v = N_r \times (N_c - N_{pk} - N_s) + N_s$$
 
 ## Data Modelling
 ### Chebotko Diagrams
@@ -116,3 +129,28 @@ UDT will look like a table, defines nesting feature
 * key attribute has to be in the primary key, does not have to come first
     * it does not have to be the partition key of the table
     * it may be a clustering column
+
+### Applying Mapping rules
+```
+user_id = ? and uploaded_timestamp > ?
+ORDER BY uploaded_timestamp DESC
+```
+|videos_by_user|
+|---|
+|user_id    K|
+|uploaded_timestamp C↓|
+|video_id   C↑|
+|...|
+
+## Physical data model
+
+`Physical model = Logical model + data types`
+
+### Data duplication
+* byproduct of the modelling principles
+* is NOT replication
+* consider data consistency: how do you keep tables in sync
+* OK: duplication across tables, partitions, rows
+* Not OK: non-constant duplication factor
+    * re-think your use-case
+    * apply limits
