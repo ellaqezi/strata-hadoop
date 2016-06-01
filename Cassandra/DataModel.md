@@ -25,7 +25,7 @@
     * Calculating number of values
         * if you have regular columns, use general formula
         * if you have ONLY primary key and static use 2nd formula
-        ![formula](http://mathurl.com/hoy5wpr.png
+        ![formula](http://mathurl.com/hoy5wpr.png)
         $$N_v = N_r \times (N_c - N_{pk} - N_s) + N_s$$
 
 ## Data Modelling
