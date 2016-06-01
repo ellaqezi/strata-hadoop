@@ -190,3 +190,7 @@ _Reads from MemTable and SSTable_
 10. What are tokens?
     * An element on the ring that depends on the partitioner
     * A token determines the node's position on the ring and the portion of data it is responsible for
+
+11. Why do filenames change on SSTable updates?
+    * compaction occurs
+    * la-[1-5]-\*.db -> la-[1-5][0-9]-\*.db
