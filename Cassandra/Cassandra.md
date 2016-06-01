@@ -190,4 +190,3 @@ _Reads from MemTable and SSTable_
 10. What are tokens?
     * An element on the ring that depends on the partitioner
     * A token determines the node's position on the ring and the portion of data it is responsible for
-    * The range for the Murmur3Partitioner (default) is -263 to +263. The range for the RandomPartitioner is 0 to $2127^{-1}$.
