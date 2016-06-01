@@ -69,10 +69,10 @@
 denoted by C, ↑: ascending, ↓: descending
 
 |actors_by_video |
-|--- |
-|video_id   K|
-|actor_name C↑|
-|character_name C↑|
+|---| ---: |
+|video_id |  K|
+|actor_name | C↑|
+|character_name |C↑|
 
 #### User-defined types
 UDT will look like a table, defines nesting feature
@@ -84,16 +84,35 @@ UDT will look like a table, defines nesting feature
 
 ## Mapping rules
 * query-driven methodology
+* _numbering of mapping rules is a must-know for the certification exam_
+
 ### MR1: Entities and Relationships
+* mapping tables
 * everything in conceptual model will map to logical model
     * entity is a table
     * attributes are columns in table
         * underlined attribute (unique) will be primary key
 * each relationship is a row in the table
+
 ### MR2: Equality search attributes
 * ordered set of columns, primary key and clustering columns
 * equality search attributes MUST come first in ordering of primary key
     * i.e. search videos by title then primary key should be **title** [K] + type [K] + video_id [C↑]
+
 ### MR3: Inequality search attributes
+* all inequality **FOLLOW** equality searches
+> you CANNOT mix them up
+* once you have an inequality you won't use following columns in the primary key sequence
+* inequality searches are ">" or "<"
+* **inequality search attributes become clustering columns**
+
 ### MR4: Ordering attributes
+* Beware of ordering
+* ordering is based on clustering columns
+* unlike in relational, cassandra **pre-orders** and pre-joins
+
 ### MR5: Key attributes
+* throw id (usually some uuid) in there for uniqueness
+* key attribute has to be in the primary key, does not have to come first
+    * it does not have to be the partition key of the table
+    * it may be a clustering column
