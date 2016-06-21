@@ -18,7 +18,7 @@
 |Which of the following is a valid Cassandra data type?|timestamp|
 |Which of the following are DML?|SELECT, ALTER TABLE, DROP are not DML|
 |An SSTable is immutable, meaning that it cannot be modified.|TRUE|
-|Compaction does NOT do which of the following?|Redistribute SSTables to rebalance node workload|
+|Compaction does NOT do which of the following?|Redistribute SSTables to re-balance node workload|
 |Tombstones are _____________?|Markers that a delete has occurred - the standard write mechanisms are used to propagate the delete to other replicas|
 |Which of the following statements about writes is incorrect?|Cassandra sends write requests to the minimum number of replica nodes needed to fulfill consistency requirements|
 |What is the smallest atomic unit of storage in Cassandra?|partition|
@@ -41,7 +41,7 @@
 |How do you determine the key of a 1-n relationship?|Key attributes of entity type on the many side|
 |How do you determine the key of a m-n relationship?|Key attributes of both participating entity types|
 |What does disjoint mean?|An entity can only participate in only one subtype role|
-|What is an application workflow?|Tasks formed by causual dependencies|
+|What is an application workflow?|Tasks formed by causal dependencies|
 |What is a table's main purpose in a Cassandra database?|Serve a query|
 |What are the two preferable table query strategies?|Partition per query and partition+ per query|
 |Why do we nest data in Cassandra?|Support a partition per query access pattern|
@@ -53,3 +53,13 @@
 |How do Cassandra PRIMARY KEYs differ from relational?|Cassandra keys support a query and provide uniqueness; relational keys provide only uniqueness.|
 |Which is not an advantage of a surrogate key?|They are human friendly and easy to remember|
 |Which partition splitting scheme gives you the most control?|Adding an artificial column|
+|Which command bulk loads data from a CSV file?|COPY|
+|Partitions...|group rows physically together on disk based on the partition key.|
+|What is the role of the partitioner?|It hashes the partition key values to create a partition token.|
+|Partition key columns are optional if you have clustering columns.|FALSE|
+|What benefits do Clustering columns provide?|Reading sorted data is a matter of seeking the disk head once.|
+|Why do we add the ID field as the last clustering column of the PRIMARY KEY?|Adding the ID first would prevent further ordering because ID values are unique. The PRIMARY KEY as a whole must be unique|
+|Cassandra works best on network attached storage.|FALSE|
+|How much data can a single Cassandra node effectively handle?|1 to 3 terabytes|
+|Why do we use UUIDs in Cassandra to uniquely identify records?|To avoid conflicts in auto generating IDs between nodes|
+|Cassandra requires you to specify the width of textual types, for example VARCHAR(50).|FALSE|
