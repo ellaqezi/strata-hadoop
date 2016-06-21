@@ -43,7 +43,7 @@
 |What does disjoint mean?|An entity can only participate in only one subtype role|
 |What is an application workflow?|Tasks formed by causual dependencies|
 |What is a table's main purpose in a Cassandra database?|Serve a query|
-|What are the two preferrable table query strategies?|Partition per query and partition+ per query|
+|What are the two preferable table query strategies?|Partition per query and partition+ per query|
 |Why do we nest data in Cassandra?|Support a partition per query access pattern|
 |Choose the option that lists the mapping rules in proper order|Entities and relationships, equality search attributes, inequiality search attributes, ordering attributes, key attributes|
 |What is the recommended partition size limit for Cassandra 2.0 or earlier?|100MB|
