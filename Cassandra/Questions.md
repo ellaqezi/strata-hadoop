@@ -81,3 +81,12 @@
 |Hinted hand-off is disabled by default.|FALSE|
 |Read repair always occurs when consistency level is set to...|All|
 |What does read_repair_chance do?|Sets the probability which Cassandra will perform a read repair with a consistency level less than ALL.|
+|The purpose of the commit log is...|to replay if a crashed node restarts.|
+|When does a client acknowledge a write?|After the commit log and MemTable are written|
+|Which of the following are stored sorted by clustering columns? Check all that apply.|MemTable SSTable|
+|The partition summary...|stores byte offsets into the partition index.|
+|The key cache...|stores the byte offset of the most recently accessed records.|
+|Which of the following structures reside on disk? Check all that apply.|SSTable and partition index|
+|Which of the following are benefits from compaction? Check all that apply.|More optimal disk usage, faster reads, less memory pressure|
+|All tombstones are discarded during compaction.|FALSE|
+|In which of the following scenarios would a new partition on disk be larger than either of its input partition segments after a compaction?|The input partition segments are made up of mostly INSERT operations.|
