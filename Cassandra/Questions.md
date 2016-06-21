@@ -49,7 +49,7 @@
 |What is the recommended partition size limit for Cassandra 2.0 or earlier?|100MB|
 |What Cassandra structure aides with consistency between duplicate data copies?|logged batch|
 |When are client side joins appropriate?|When your resources don't support the necessary data duplication|
-|How do lightweight transactions differ from normal updates/inserts?|They compare (validation a condition) before setting (read before write)|
+|How do lightweight transactions differ from normal updates/inserts?|They compare (validate a condition) before setting (read before write)|
 |How do Cassandra PRIMARY KEYs differ from relational?|Cassandra keys support a query and provide uniqueness; relational keys provide only uniqueness.|
 |Which is not an advantage of a surrogate key?|They are human friendly and easy to remember|
 |Which partition splitting scheme gives you the most control?|Adding an artificial column|
@@ -63,3 +63,21 @@
 |How much data can a single Cassandra node effectively handle?|1 to 3 terabytes|
 |Why do we use UUIDs in Cassandra to uniquely identify records?|To avoid conflicts in auto generating IDs between nodes|
 |Cassandra requires you to specify the width of textual types, for example VARCHAR(50).|FALSE|
+|In a full network partition, that is, parts of the cluster are completely disconnected from the whole, only the largest group of nodes can still satisfy queries.|FALSE|
+|By default, how many vnodes does each node have?|256|
+|Which parameter in the cassandra.yaml file configures vnodes?|num_tokens|
+|When using vnodes, Cassandra automatically assigns the token ranges for you.|TRUE|
+|Nodes can only gossip with specific other nodes in the cluster.|FALSE|
+|Which of the following statements are true concerning gossip? Choose all that apply.|Constant trickle of network traffic. Does not cause network spikes. Minimal compared to data streaming.|
+|Snitch is used to...|Determine/declare each node's rack and data center|
+|Snitch is configured in the cassandra.yaml file.|TRUE|
+|Which is the following is *not* a type of snitch?|CassandraSnitch|
+|A replication factor of three means that Cassandra will store a total of four copies: the master and three copies.|FALSE|
+|A replication factor greater than one...|	Widens the range of token values a single node is responsible for. Causes overlap in the token ranges amongst nodes. Requires more storage in your cluster.|
+|Where does Cassandra reside in the CAP theorem?|availability/partition tolerance|
+|With a replication factor of two, how many nodes must respond with success using consistency level quorum to indicate a successful operation?|2|
+|With a replication factor of three, which of the following options guarantee strong consistency? Check all that apply.|write all, read quorum|
+|The default time for a node to store a hint is:|3 hours|
+|Hinted hand-off is disabled by default.|FALSE|
+|Read repair always occurs when consistency level is set to...|All|
+|What does read_repair_chance do?|Sets the probability which Cassandra will perform a read repair with a consistency level less than ALL.|
