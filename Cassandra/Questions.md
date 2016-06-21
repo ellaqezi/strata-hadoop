@@ -28,3 +28,28 @@
 |What is an upsert?|INSERTs may cause UPDATEs; UPDATEs may causes INSERTs|
 |What purpose do clustering columns serve?|Provide uniqueness within the partition as well as ordering criteria|
 |What is the relationship between a partition key and a clustering column?|Partition keys determine a grouping criteria whereas clustering columns determine ordering criteria|
+|What command bulk-loads data files?|COPY|
+|What command drops all records from an existing table?|TRUNCATE|
+|What command adds/removes columns to/from a table?|ALTER|
+|Which is NOT a Cassandra column type?|DICTIONARY<>|
+|What command executes a file of CQL statements?|SOURCE|
+|Cassandra counters are always 100% accurate.|FALSE|
+|Which is NOT an advantage of conceptual data modeling?|Creates optimized tables for your hardware resources|
+|Which is NOT a type found in a conceptual data model?|Constraint types|
+|Attribute types cannot be...|block|
+|How do you determine the key of a 1-1 relationship?|Key attributes of either participating entity types|
+|How do you determine the key of a 1-n relationship?|Key attributes of entity type on the many side|
+|How do you determine the key of a m-n relationship?|Key attributes of both participating entity types|
+|What does disjoint mean?|An entity can only participate in only one subtype role|
+|What is an application workflow?|Tasks formed by causual dependencies|
+|What is a table's main purpose in a Cassandra database?|Serve a query|
+|What are the two preferrable table query strategies?|Partition per query and partition+ per query|
+|Why do we nest data in Cassandra?|Support a partition per query access pattern|
+|Choose the option that lists the mapping rules in proper order|Entities and relationships, equality search attributes, inequiality search attributes, ordering attributes, key attributes|
+|What is the recommended partition size limit for Cassandra 2.0 or earlier?|100MB|
+|What Cassandra structure aides with consistency between duplicate data copies?|logged batch|
+|When are client side joins appropriate?|When your resources don't support the necessary data duplication|
+|How do lightweight transactions differ from normal updates/inserts?|They compare (validation a condition) before setting (read before write)|
+|How do Cassandra PRIMARY KEYs differ from relational?|Cassandra keys support a query and provide uniqueness; relational keys provide only uniqueness.|
+|Which is not an advantage of a surrogate key?|They are human friendly and easy to remember|
+|Which partition splitting scheme gives you the most control?|Adding an artificial column|
