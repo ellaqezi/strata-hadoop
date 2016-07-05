@@ -10,7 +10,7 @@ WITH REPLICATION = {
 ```
 * configuration in cassandra.yaml file
     * every node has this file
-    * you can disable hinted handoff
+    * you can disable hinted handoff, which is enabled by default
     * a node will store a hint by default for 3 hours, may be changed
 * replication will typically not occur on the same physical rack
 * Datacenters: split spark cluster from cassandra cluster
@@ -24,7 +24,7 @@ WITH REPLICATION = {
 * coordinator node picked by driver
 * seed nodes introduce the rest of the cluster to the joining nodes
 * any node can be seed nodes (2 or 3 nodes that will always be there, valid ip addresses)
-> you never have to take the cluster down (not for updating, adding nodes, taking out nodes, etc)
+    > you never have to take the cluster down (not for updating, adding nodes, taking out nodes, etc)
 
 ## Peer-to-peer
 * partitioned tolerance
@@ -87,6 +87,19 @@ When `R + W > n`, you get strong consistency
     * quorum: consistency
     * one and one: latency
 
+## Memory
+The more memory a Cassandra node has, the better read performance. More RAM also allows memory tables (memtables) to hold more recently written data. Larger memtables lead to a fewer number of SSTables being flushed to disk and fewer files to scan during a read. The ideal amount of RAM depends on the anticipated size of your hot data.
+
+For both dedicated hardware and virtual environments:
+* Production: 16GB to 64GB; the minimum is 8GB.
+* Development in non-loading testing environments: no less than 4GB.
+
+## CPU
+Insert-heavy workloads are CPU-bound in Cassandra before becoming memory-bound. (All writes go to the commit log, but Cassandra is so efficient in writing that the CPU is the limiting factor.) Cassandra is highly concurrent and uses as many CPU cores as available:
+
+* Production environments: For dedicated hardware, 8-core CPU processors are the current price-performance sweet spot.
+* Development in non-loading testing environments: For dedicated hardware, 2-core CPU processors.
+
 ## Failed writes
 * hints are kept for 3 hours by default
 * throttling
@@ -95,13 +108,28 @@ When `R + W > n`, you get strong consistency
 Consistency level of ANY:
 Given hinted hand-off is enabled and all three nodes are down, even if only a hint was handed off, still a "valid" write
 
->read up on Merkle-tree
+    >read up on Merkle-tree
 
 ## Nodetool Repair
 * Nodetool is the main management tool for Cassandra
     * get status and control cluster
 * should be done atleast weekly, off-hours maintenance
 * repair more often than your grace period, default 10 days
+
+## Transactions
+* BATCH
+    * combines multiple data modification language (DML) statements (INSERT, UPDATE, DELETE) into a single logical operation
+    * sets a client-supplied timestamp for all columns written by the statements in the batch
+    * can save network exchanges between the client/server and server coordinator/replicas
+    * Cassandra spreads requests across nearby nodes as much as possible to optimize performance. Batch statements will
+    have an uneven workload, and may access many nodes or a single node repeatedly.
+    * Although a logged batch guarantees that if any part of the batch succeeds, all of it will, no other transactional enforcement is done at the batch level.
+        * no batch isolation
+        * transactional row updates within a partition key are isolated: clients cannot read a partial update.
+* lightweight transactions
+    * INSERT and UPDATE statements using the IF clause support lightweight transactions, also known as Compare and Set (CAS).
+    * common use: insertion operation that must be unique
+    * Lightweight transactions should not be used casually, as the latency of operations increases **fourfold** due to the due to the round-trips necessary between the CAS coordinators.
 
 ## Write Path
 * Storage (based on moving disks, big sequential write is better than making many little writes)

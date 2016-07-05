@@ -35,6 +35,7 @@
             ```
 
 ## Data Modelling
+
 ### Chebotko Diagrams
 * ERD: entity relationship diagram
 * logical and physical data model
@@ -56,6 +57,7 @@
     * disk space is cheap
     * therefore, data duplication is OK
     * consistency, syncing multiple tables in batch
+
 ### Key constraints
 * partitioning strategy
     * how is data partitioned and store
@@ -65,6 +67,7 @@
     * 1:1   either
     * m:n   combination
     * 1:n   key on many side
+
 ### Query and schema design
 * schema design is directly affected by queries
     * how you want to pull out data defines how schema is structured
@@ -77,6 +80,7 @@
         * a single partition **ALWAYS** lands on a single node
     * partition may be single- or multi-row
     * coordinator is contacted first, picked randomly and is responsible for read/write
+
 ### Nest data
 * organizes multiple entities in a single partition
 * clustering mechanisms

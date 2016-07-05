@@ -10,7 +10,7 @@
 |Apache Cassandra can be downloaded in which formats, including DataStax Community variants?|Debian and Tarball|
 |Clients should have ________________ so that the column values will replace older values based on their timestamp.|Synchronized clocks|
 |Which of the following is not true for Apache Cassandra?|Cassandra can compute the minimum value for a column with CQL|
-|In a Cassandra instance, a table called Orders holds order information. Each time an order is placed, an entry must also be placed in a denormalized table OrdersByCustomer to keep track of order history per customer. How does Cassandra handle this?|Cassandra will do nothing. An additional write must be specified in the application that fulfills the wrote to the Orders and OrdersByCustomer tables|
+|In a Cassandra instance, a table called Orders holds order information. Each time an order is placed, an entry must also be placed in a de-normalized table OrdersByCustomer to keep track of order history per customer. How does Cassandra handle this?|Cassandra will do nothing. An additional write must be specified in the application that fulfills the wrote to the Orders and OrdersByCustomer tables|
 |When defining a table in Apache Cassandra, a _________________ must be defined.|Primary key|
 |The main function of a keyspace is to control ___________________.|Replication|
 |An application tracks a user's habits. Every time a user clicks a link on a page within your site, the time of the event is recorded as well as the link clicked. In order to write an efficient query, all data must be stored in a single partition. Which of the following tables best models the needs of the application?|CREATE TABLE habits (userid UUID, clicktime timestamp, link text, PRIMARY KEY(userid, clicktime));|
@@ -45,7 +45,7 @@
 |What is a table's main purpose in a Cassandra database?|Serve a query|
 |What are the two preferable table query strategies?|Partition per query and partition+ per query|
 |Why do we nest data in Cassandra?|Support a partition per query access pattern|
-|Choose the option that lists the mapping rules in proper order|Entities and relationships, equality search attributes, inequiality search attributes, ordering attributes, key attributes|
+|Choose the option that lists the mapping rules in proper order|Entities and relationships, equality search attributes, inequality search attributes, ordering attributes, key attributes|
 |What is the recommended partition size limit for Cassandra 2.0 or earlier?|100MB|
 |What Cassandra structure aides with consistency between duplicate data copies?|logged batch|
 |When are client side joins appropriate?|When your resources don't support the necessary data duplication|
